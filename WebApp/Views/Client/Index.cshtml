@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ClientPatientManagement.Core.Model.Client>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Agregar cliente", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            Nombre
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.LastName)*@
+            Apellido
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Email)*@
+            Email
+        </th>
+        <th></th>
+    </tr>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td>
+                No se encontraron clientes
+            </td>
+        </tr>
+    }
+    else{
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    }
+
+</table>

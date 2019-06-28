@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas solares</title>
+    <link href="~/Content/site.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Cabecera -->
+    <header>
+        <img src="~/Content/Images/logo.gif" width="189" height="57" alt="logo"/>
+        <h1>¿Hay vida en otros planetas? - Sistemas solares #445</h1>
+    </header>
+    <!-- Contenido -->
+    <section>
+        @RenderBody()
+    </section>
+    <!-- Contenido relacionado-->
+    <aside>
+        <p>Contenido Relacionado</p>
+    </aside>
+    <!-- Pie de pagina -->
+    <footer>
+        <a href="#">¿Hay vida en otros planetas? - 2019</a>
+    </footer>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ClientPatientManagement.Core.Model.Doctor>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Doctores</h2>
+
+
+Para agregar un doctor, haga click @Html.ActionLink("aquí", "Create", "Doctor", null, null)
+
+<br />
+
+
+<h3>Lista de doctores</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>ID</label>
+            </th>
+            <th>
+                <label>Nombre</label>
+            </th>
+            <th>
+                <label>Apellido</label>
+            </th>
+            <th>
+                <label>Teléfono</label>
+            </th>
+            <th>
+                <label>Email</label>
+            </th>
+            <th>
+                <label>Acciones</label>
+            </th>
+        </tr>
+    </thead>
+
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td>
+                No se encontraron doctores
+            </td>
+        </tr>
+    }
+    else
+    {
+        <tbody>
+            foreach (var doctor in Model)
+            {
+                <tr>
+                    <td>
+                        @doctor.Id
+                    </td>
+                    <td>
+                        @doctor.Name
+                    </td>
+                    <td>
+                        @doctor.LastName
+                    </td>
+                    <td>
+                        @doctor.Phone
+                    </td>
+                    <td>
+                        @doctor.Email
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", "Doctor", new { id = doctor.Id }, null) |
+                        @Html.ActionLink("Eliminar", "Delete", "Doctor", new { id = doctor.Id }, null)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+
+</table>
+
