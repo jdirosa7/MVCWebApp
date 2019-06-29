@@ -49,7 +49,7 @@ namespace WebApp.Data
             {
                 patient.Name = entity.Name;
                 patient.Gender = entity.Gender;
-                patient.Owner = entity.Owner;
+                //patient.Owner = entity.Owner;
                 patient.ClientId = entity.ClientId;
 
                 db.SaveChanges();

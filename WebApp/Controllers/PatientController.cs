@@ -1,100 +1,133 @@
-﻿using ClientPatientManagement.Core.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClientPatientManagement.Core.Data;
+using ClientPatientManagement.Core.Model;
 
 namespace WebApp.Controllers
 {
     public class PatientController : Controller
     {
+        private VetDbContext db = new VetDbContext();
+
+        // GET: Patient
         public ActionResult Index()
         {
-            var model = new PatientModel();
-            return View("Index", model.ObtenerPacientes());
+            var patients = db.Patients.Include(p => p.Owner);
+            return View(patients.ToList());
         }
 
+        // GET: Patient/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Patient patient = db.Patients.Find(id);
+            if (patient == null)
+            {
+                return HttpNotFound();
+            }
+            return View(patient);
+        }
+
+        // GET: Patient/Create
         public ActionResult Create()
         {
-            var model = new ClientModel();
-            var clients = model.ObtenerClientes();
-            ViewBag.Clients = new SelectList(clients, "Id", "Name");
-
-            var genders = Enum.GetValues(typeof(Gender)).Cast<Gender>();
-            ViewBag.Genders = new SelectList(genders);
-
+            ViewBag.ClientId = new SelectList(db.Clients, "Id", "Name");
             return View();
         }
 
-        private IEnumerable<SelectListItem> GetSelectClientItems(IEnumerable<Client> clients)
-        {
-            var selectList = new List<SelectListItem>();
-
-            foreach (var client in clients)
-            {
-                selectList.Add(new SelectListItem
-                {
-                    Value = client.Id.ToString(),
-                    Text = client.Name
-                });
-            }
-
-            return selectList;
-        }
-
+        // POST: Patient/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(Patient patient)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,ClientId,Name,Gender")] Patient patient)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var model = new PatientModel();
-                model.AgregarPaciente(patient);
-
+                db.Patients.Add(patient);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
+
+            ViewBag.ClientId = new SelectList(db.Clients, "Id", "Name", patient.ClientId);
+            return View(patient);
+        }
+
+        // GET: Patient/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-        }
-
-
-        public ActionResult Edit(int id)
-        {
-            var model = new PatientModel();
-            var patient = model.ObtenerPacienteById(id);
-            return View("Edit", patient);
-        }
-
-
-        [HttpPost]
-        public ActionResult Edit(Doctor entity)
-        {
-            try
+            Patient patient = db.Patients.Find(id);
+            if (patient == null)
             {
-                var model = new PatientModel();
-                var patient = model.ObtenerPacienteById(entity.Id);
+                return HttpNotFound();
+            }
+            ViewBag.ClientId = new SelectList(db.Clients, "Id", "Name", patient.ClientId);
+            return View(patient);
+        }
 
-                patient.Name = entity.Name;
-
-                model.ActualizarPaciente(patient);
-
+        // POST: Patient/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,ClientId,Name,Gender")] Patient patient)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(patient).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                return View();
-            }
+            ViewBag.ClientId = new SelectList(db.Clients, "Id", "Name", patient.ClientId);
+            return View(patient);
         }
 
-
-        public ActionResult Delete(int id)
+        // GET: Patient/Delete/5
+        public ActionResult Delete(int? id)
         {
-            var model = new PatientModel();
-            model.EliminarPaciente(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Patient patient = db.Patients.Find(id);
+            if (patient == null)
+            {
+                return HttpNotFound();
+            }
+            return View(patient);
+        }
 
+        // POST: Patient/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Patient patient = db.Patients.Find(id);
+            db.Patients.Remove(patient);
+            db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

@@ -1,79 +1,128 @@
-﻿using ClientPatientManagement.Core.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClientPatientManagement.Core.Data;
+using ClientPatientManagement.Core.Model;
 
-namespace WebApp.Controllers
+namespace WebApp.Models
 {
     public class ClientController : Controller
     {
+        private VetDbContext db = new VetDbContext();
+
+        // GET: Client
         public ActionResult Index()
         {
-            var model = new ClientModel();
-            return View("Index", model.ObtenerClientes());
+            return View(db.Clients.ToList());
         }
 
+        // GET: Client/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Client client = db.Clients.Find(id);
+            if (client == null)
+            {
+                return HttpNotFound();
+            }
+            return View(client);
+        }
+
+        // GET: Client/Create
         public ActionResult Create()
         {
             return View();
         }
 
+        // POST: Client/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(Client cliente)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Name,LastName,Email")] Client client)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var model = new ClientModel();
-                model.AgregarCliente(cliente);
-
+                db.Clients.Add(client);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
+
+            return View(client);
+        }
+
+        // GET: Client/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-        }
-
-
-        public ActionResult Edit(int id)
-        {
-            var model = new ClientModel();
-            var cliente = model.ObtenerClienteById(id);
-            return View("Edit", cliente);
-        }
-
-
-        [HttpPost]
-        public ActionResult Edit(Doctor entity)
-        {
-            try
+            Client client = db.Clients.Find(id);
+            if (client == null)
             {
-                var model = new ClientModel();
-                var cliente = model.ObtenerClienteById(entity.Id);
+                return HttpNotFound();
+            }
+            return View(client);
+        }
 
-                cliente.Name = entity.Name;
-                cliente.LastName = entity.LastName;
-                cliente.Email = entity.Email;
-
-                model.ActualizarCliente(cliente);
-
+        // POST: Client/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Name,LastName,Email")] Client client)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(client).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                return View();
-            }
+            return View(client);
         }
 
-
-        public ActionResult Delete(int id)
+        // GET: Client/Delete/5
+        public ActionResult Delete(int? id)
         {
-            var model = new ClientModel();
-            model.EliminarCliente(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Client client = db.Clients.Find(id);
+            if (client == null)
+            {
+                return HttpNotFound();
+            }
+            return View(client);
+        }
 
+        // POST: Client/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Client client = db.Clients.Find(id);
+            db.Clients.Remove(client);
+            db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

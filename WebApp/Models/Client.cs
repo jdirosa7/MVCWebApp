@@ -11,14 +11,13 @@ namespace ClientPatientManagement.Core.Model
     {
         public Client()
         {
-            //Patients = new List<Patient>();
+            
         }
         public int Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-
-        //public IList<Patient> Patients { get; set; }
+ 
     }
 
     [MetadataType(typeof(ClientMetadata))]
