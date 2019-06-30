@@ -34,16 +34,7 @@ namespace ClientPatientManagement.Core.Model
             public DateTime Date { get; set; }
 
             [Required]
-            public int Hour { get; set; }
-
-            [Required]
-            public Doctor Doctor { get; set; }
-
-            [Required]
-            public Patient Patient { get; set; }
-
-            [Required]
-            public Room Room { get; set; }
+            public int Hour { get; set; }            
         }
     }
 

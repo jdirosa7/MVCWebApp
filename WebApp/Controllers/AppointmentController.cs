@@ -29,7 +29,7 @@ namespace WebApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Appointment appointment = db.Appointments.Find(id);
+            Appointment appointment = db.Appointments.Include(a => a.Doctor).Include(a => a.Patient).Include(a => a.Room).Where(x => x.Id == id).Single();
             if (appointment == null)
             {
                 return HttpNotFound();

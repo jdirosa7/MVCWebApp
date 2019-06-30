@@ -1,81 +1,128 @@
-﻿using ClientPatientManagement.Core.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClientPatientManagement.Core.Data;
+using ClientPatientManagement.Core.Model;
 
 namespace WebApp.Controllers
 {
     public class DoctorController : Controller
     {
+        private VetDbContext db = new VetDbContext();
+
         // GET: Doctor
         public ActionResult Index()
         {
-            var model = new DoctorModel();
-            return View("Index", model.ObtenerDoctores());
+            return View(db.Doctors.ToList());
         }
 
+        // GET: Doctor/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Doctor doctor = db.Doctors.Find(id);
+            if (doctor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(doctor);
+        }
+
+        // GET: Doctor/Create
         public ActionResult Create()
         {
             return View();
         }
 
+        // POST: Doctor/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(Doctor doctor)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Name,LastName,Phone,Email")] Doctor doctor)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var model = new DoctorModel();
-                model.AgregarDoctor(doctor);
-
+                db.Doctors.Add(doctor);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
+
+            return View(doctor);
+        }
+
+        // GET: Doctor/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-        }
-
-        
-        public ActionResult Edit(int id)
-        {
-            var model = new DoctorModel();
-            var doctor = model.ObtenerDoctorById(id);
-            return View("Edit", doctor);
-        }
-
-        
-        [HttpPost]
-        public ActionResult Edit(Doctor entity)
-        {
-            try
+            Doctor doctor = db.Doctors.Find(id);
+            if (doctor == null)
             {
-                var model = new DoctorModel();
-                var doctor = model.ObtenerDoctorById(entity.Id);
+                return HttpNotFound();
+            }
+            return View(doctor);
+        }
 
-                doctor.Name = entity.Name;
-                doctor.LastName = entity.LastName;
-                doctor.Phone = entity.Phone;
-                doctor.Email = entity.Email;
-
-                model.ActualizarDoctor(doctor);
-
+        // POST: Doctor/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Name,LastName,Phone,Email")] Doctor doctor)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(doctor).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                return View();
-            }
+            return View(doctor);
         }
 
-        
-        public ActionResult Delete(int id)
+        // GET: Doctor/Delete/5
+        public ActionResult Delete(int? id)
         {
-            var model = new DoctorModel();
-            model.EliminarDoctor(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Doctor doctor = db.Doctors.Find(id);
+            if (doctor == null)
+            {
+                return HttpNotFound();
+            }
+            return View(doctor);
+        }
 
+        // POST: Doctor/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Doctor doctor = db.Doctors.Find(id);
+            db.Doctors.Remove(doctor);
+            db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

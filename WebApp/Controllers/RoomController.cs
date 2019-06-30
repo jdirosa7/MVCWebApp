@@ -1,107 +1,128 @@
-﻿using ClientPatientManagement.Core.Data;
-using ClientPatientManagement.Core.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ClientPatientManagement.Core.Data;
+using ClientPatientManagement.Core.Model;
 
 namespace WebApp.Controllers
 {
     public class RoomController : Controller
     {
-        // GET: Rom
+        private VetDbContext db = new VetDbContext();
+
+        // GET: Room
         public ActionResult Index()
         {
-            var model = new RoomModel();
-            return View("Index", model.TraerSalas());
+            return View(db.Rooms.ToList());
         }
 
-        // GET: Rom/Details/5
-        public ActionResult Details(int id)
+        // GET: Room/Details/5
+        public ActionResult Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Room room = db.Rooms.Find(id);
+            if (room == null)
+            {
+                return HttpNotFound();
+            }
+            return View(room);
         }
 
-        // GET: Rom/Create
+        // GET: Room/Create
         public ActionResult Create()
         {
-            int a = 2;
-
             return View();
         }
 
-        // POST: Rom/Create
+        // POST: Room/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(string Nombre, string Localidad)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Name,Location")] Room room)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-                var model = new RoomModel();
-                model.AgregarRoom(Nombre, Localidad);
-
+                db.Rooms.Add(room);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
+
+            return View(room);
+        }
+
+        // GET: Room/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-        }
-
-        // GET: Rom/Edit/5
-        public ActionResult Edit(int id)
-        {
-            var model = new RoomModel();
-            var room = model.ObtenerRoomById(id);
-            return View("Edit", room);
-        }
-
-        // POST: Rom/Edit/5
-        [HttpPost]
-        public ActionResult Edit(Room entity)
-        {
-            try
+            Room room = db.Rooms.Find(id);
+            if (room == null)
             {
-                var model = new RoomModel();
-                var room = model.ObtenerRoomById(entity.Id);
+                return HttpNotFound();
+            }
+            return View(room);
+        }
 
-                room.Name = entity.Name;
-                room.Location = entity.Location;
-
-                model.ActualizarRoom(room);
-
+        // POST: Room/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Name,Location")] Room room)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(room).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch(Exception ex)
-            {
-                return View();
-            }
+            return View(room);
         }
 
-        // GET: Rom/Delete/5
-        public ActionResult Delete(int id)
+        // GET: Room/Delete/5
+        public ActionResult Delete(int? id)
         {
-            var model = new RoomModel();
-            model.EliminarRoom(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Room room = db.Rooms.Find(id);
+            if (room == null)
+            {
+                return HttpNotFound();
+            }
+            return View(room);
+        }
 
+        // POST: Room/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Room room = db.Rooms.Find(id);
+            db.Rooms.Remove(room);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        // POST: Rom/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing)
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                db.Dispose();
             }
-            catch
-            {
-                return View();
-            }
+            base.Dispose(disposing);
         }
     }
 }

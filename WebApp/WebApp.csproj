@@ -195,6 +195,10 @@
     <Compile Include="Migrations\201906202120087_UpdateDataBase.Designer.cs">
       <DependentUpon>201906202120087_UpdateDataBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906292333380_LastUpdate.cs" />
+    <Compile Include="Migrations\201906292333380_LastUpdate.Designer.cs">
+      <DependentUpon>201906292333380_LastUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Client.cs" />
@@ -251,13 +255,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Room\Index.cshtml" />
     <Content Include="Views\Shared\_MyLayout.cshtml" />
-    <Content Include="Views\Room\Editar.cshtml" />
-    <Content Include="Views\Room\Edit.cshtml" />
-    <Content Include="Views\Doctor\Index.cshtml" />
-    <Content Include="Views\Doctor\Edit.cshtml" />
-    <Content Include="Views\Doctor\Create.cshtml" />
     <Content Include="Views\Client\Create.cshtml" />
     <Content Include="Views\Client\Delete.cshtml" />
     <Content Include="Views\Client\Details.cshtml" />
@@ -273,6 +271,16 @@
     <Content Include="Views\Appointment\Details.cshtml" />
     <Content Include="Views\Appointment\Edit.cshtml" />
     <Content Include="Views\Appointment\Index.cshtml" />
+    <Content Include="Views\Doctor\Create.cshtml" />
+    <Content Include="Views\Doctor\Delete.cshtml" />
+    <Content Include="Views\Doctor\Details.cshtml" />
+    <Content Include="Views\Doctor\Edit.cshtml" />
+    <Content Include="Views\Doctor\Index.cshtml" />
+    <Content Include="Views\Room\Create.cshtml" />
+    <Content Include="Views\Room\Delete.cshtml" />
+    <Content Include="Views\Room\Details.cshtml" />
+    <Content Include="Views\Room\Edit.cshtml" />
+    <Content Include="Views\Room\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -301,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906202120087_UpdateDataBase.resx">
       <DependentUpon>201906202120087_UpdateDataBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906292333380_LastUpdate.resx">
+      <DependentUpon>201906292333380_LastUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
